@@ -1,0 +1,21 @@
+package com.web.ecommerce.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.web.ecommerce.dao.{{entity}}Dao;
+import com.web.ecommerce.entity.{{entity}};
+import com.web.ecommerce.service.{{entity}}Service;
+
+@Service("{{entity}}Service")
+@Transactional(rollbackFor = Error.class)
+public class {{entity}}ServiceImpl extends BaseServiceImpl<{{entity}}, Integer> implements {{entity}}Service {
+    @Autowired
+    private {{entity}}Dao {{lowerCase entity}}Dao;
+
+    @Override
+    public {{entity}} findByName(String name) {
+        return {{lowerCase entity}}Dao.findByName(name);
+    }
+}

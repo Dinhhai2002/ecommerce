@@ -1,0 +1,28 @@
+package com.web.ecommerce.dao.Impl;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Repository;
+
+import com.web.ecommerce.dao.{{entity}}Dao;
+import com.web.ecommerce.entity.{{entity}};
+
+@Repository("{{entity}}Dao")
+@Transactional
+public class {{entity}}DaoImpl extends BaseDaoImpl<{{entity}}, Integer> implements {{entity}}Dao {
+    public {{entity}}DaoImpl() {
+        super({{entity}}.class);
+    }
+
+    @Override
+    public {{entity}} findByName(String name) {
+        CriteriaBuilder builder = this.getSession().getCriteriaBuilder();
+        CriteriaQuery<{{entity}}> query = builder.createQuery({{entity}}.class);
+        Root<{{entity}}> root = query.from({{entity}}.class);
+        query.where(builder.equal(root.get("name"), name));
+        return this.getSession().createQuery(query).getResultList().stream().findFirst().orElse(null);
+    }
+}

@@ -51,11 +51,10 @@ public abstract class BaseController<T, R, ID extends Serializable> {
     })
     public ResponseEntity<BaseResponse<List<R>>> getAll() {
         List<R> data = baseService.getAll().stream().map(mapper).collect(Collectors.toList());
-        return buildResponse(data, HttpStatus.OK, null);
+        return buildResponse(data, HttpStatus.OK, "success");
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Operation(summary = "Get entity by ID", description = "Lấy thông tin entity theo ID")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Thông tin trả về thành công",
@@ -68,7 +67,7 @@ public abstract class BaseController<T, R, ID extends Serializable> {
         if (entity == null) {
             return buildResponse(null, HttpStatus.NOT_FOUND, "Not found");
         }
-        return buildResponse(mapper.apply(entity), HttpStatus.OK, null);
+        return buildResponse(mapper.apply(entity), HttpStatus.OK, "success");
     }
 
     @PostMapping
@@ -80,7 +79,7 @@ public abstract class BaseController<T, R, ID extends Serializable> {
     })
     public ResponseEntity<BaseResponse<R>> create(@Parameter(description = "Entity cần tạo") @RequestBody T entity) {
         baseService.create(entity);
-        return buildResponse(mapper.apply(entity), HttpStatus.OK, null);
+        return buildResponse(mapper.apply(entity), HttpStatus.OK, "create success");
     }
 
     @PutMapping("/{id}")
@@ -94,7 +93,7 @@ public abstract class BaseController<T, R, ID extends Serializable> {
             @Parameter(description = "ID của entity") @PathVariable ID id,
             @Parameter(description = "Entity cập nhật") @RequestBody T entity) {
         baseService.update(entity);
-        return buildResponse(mapper.apply(entity), HttpStatus.OK, null);
+        return buildResponse(mapper.apply(entity), HttpStatus.OK, "update success");
     }
 
     @DeleteMapping("/{id}")
@@ -111,7 +110,7 @@ public abstract class BaseController<T, R, ID extends Serializable> {
             return buildResponse(null, HttpStatus.NOT_FOUND, "Not found");
         }
         baseService.delete(entity);
-        return buildResponse(null, HttpStatus.OK, null);
+        return buildResponse(null, HttpStatus.OK, "deleted success");
     }
 
     @GetMapping("/search")

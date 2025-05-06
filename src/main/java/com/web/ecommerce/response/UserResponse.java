@@ -32,31 +32,12 @@ public class UserResponse {
 
 	private String birthday;
 
-	@JsonProperty("ward_id")
-	private int wardId;
-
-	@JsonProperty("city_id")
-	private int cityId;
-
-	@JsonProperty("district_id")
-	private int districtId;
-
-	@JsonProperty("full_address")
-	private String fullAddress;
 
 	@JsonProperty("access_token")
 	private String accessToken;
 
-	@JsonProperty("is_login")
-	private int isLogin;
-
-	private int role;
-
 	@JsonProperty("is_active")
 	private int isActive;
-
-	@JsonProperty("is_google")
-	private int isGoogle;
 
 	@JsonProperty("point_promotion")
 	private long point;
@@ -77,16 +58,9 @@ public class UserResponse {
 		this.email = entity.getEmail();
 		this.avatarId = entity.getAvatarId();
 		this.avatarUrl = entity.getAvatarUrl();
-		this.wardId = entity.getWardId();
-		this.cityId = entity.getCityId();
-		this.districtId = entity.getDistrictId();
 		this.phone = entity.getPhone();
-		this.fullAddress = entity.getFullAddress();
 		this.accessToken = entity.getAccessToken();
-		this.isLogin = entity.getIsLogin();
 		this.isActive = entity.getIsActive();
-		this.role = entity.getRole();
-		this.isGoogle = entity.getIsGoogle();
 	}
 	
 	public UserResponse(Users entity,int cartId) {
@@ -98,16 +72,9 @@ public class UserResponse {
 		this.email = entity.getEmail();
 		this.avatarId = entity.getAvatarId();
 		this.avatarUrl = entity.getAvatarUrl();
-		this.wardId = entity.getWardId();
-		this.cityId = entity.getCityId();
-		this.districtId = entity.getDistrictId();
 		this.phone = entity.getPhone();
-		this.fullAddress = entity.getFullAddress();
 		this.accessToken = entity.getAccessToken();
-		this.isLogin = entity.getIsLogin();
 		this.isActive = entity.getIsActive();
-		this.role = entity.getRole();
-		this.isGoogle = entity.getIsGoogle();
 		this.cartId = cartId;
 	}
 

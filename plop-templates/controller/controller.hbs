@@ -3,6 +3,9 @@ package com.web.ecommerce.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.ecommerce.entity.{{entity}};
+import com.web.ecommerce.response.{{entity}}Response;
+
 @RestController
 @RequestMapping("/api/v1/{{lowerCase entity}}")
 public class {{entity}}Controller extends BaseController<{{entity}}, {{entity}}Response, Integer> {

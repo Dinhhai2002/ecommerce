@@ -58,25 +58,8 @@ public class Users extends BaseEntity {
 
 	private String birthday;
 
-	@Column(name = "ward_id")
-	private int wardId;
-
-	@Column(name = "city_id")
-	private int cityId;
-
-	@Column(name = "district_id")
-	private int districtId;
-
-	@Column(name = "full_address")
-	private String fullAddress;
-
 	@Column(name = "access_token")
 	private String accessToken;
-
-	@Column(name = "is_login")
-	private int isLogin;
-
-	private int role;
 
 	private int otp;
 
@@ -90,8 +73,5 @@ public class Users extends BaseEntity {
 
 	@Column(name = "is_active")
 	private int isActive;
-
-	@Column(name = "is_google")
-	private int isGoogle;
 
 }

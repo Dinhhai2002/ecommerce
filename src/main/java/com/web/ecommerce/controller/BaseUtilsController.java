@@ -114,8 +114,6 @@ public class BaseUtilsController {
 
 		Users user = userService.findUsersByUsersName(username);
 
-		if (user.getIsLogin() == 0 && user.getAccessToken() == "")
-			throw new Exception("Tài khoản chưa đăng nhập");
 		if (user != null)
 			return user;
 		else

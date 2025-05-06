@@ -212,12 +212,6 @@ public class JwtAuthenticationController extends BaseUtilsController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
-        if (user.getIsGoogle() == 1) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.ACCOUNT_GOOLE_IS_NOT_PERMIT);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-
         Random rand = new Random();
         int otpvalue = rand.nextInt(1255650);
         sendEmail.sendSimpleEmail(wrapper.getEmail(), "Mã OTP",
@@ -312,7 +306,6 @@ public class JwtAuthenticationController extends BaseUtilsController {
             registerUser.setEmail(wrapper.getEmail());
             registerUser.setUserName(wrapper.getEmail());
             registerUser.setAvatarUrl(wrapper.getImageUrl());
-            registerUser.setIsGoogle(1);
             registerUser.setPassword(Utils.encodeBase64(applicationProperties.getPasswordAccountGoogle()));
             registerUser.setFullName(wrapper.getFullname());
             registerUser.setIsActive(1);
@@ -321,13 +314,11 @@ public class JwtAuthenticationController extends BaseUtilsController {
             token = HttpService.login(wrapper.getEmail(), applicationProperties.getPasswordAccountGoogle(),
                     applicationProperties.getBaseUrl());
             registerUser.setAccessToken(token);
-            registerUser.setIsLogin(1);
             response.setData(new JwtResponse(token));
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         token = HttpService.login(users.getUserName(), applicationProperties.getPasswordAccountGoogle(),
                 applicationProperties.getBaseUrl());
-        registerUser.setIsLogin(1);
         response.setData(new JwtResponse(token));
 
         return new ResponseEntity<>(response, HttpStatus.OK);

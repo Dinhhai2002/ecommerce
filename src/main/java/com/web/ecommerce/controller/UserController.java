@@ -97,10 +97,6 @@ public class UserController extends BaseUtilsController {
 //		user.setGender(wrapper.getGender());
 		user.setPhone(wrapper.getPhone());
 //		user.setBirthday(this.formatDate(wrapper.getBirthday()));
-//		user.setCityId(wrapper.getCityId());
-//		user.setDistrictId(wrapper.getDistrictId());
-//		user.setWardId(wrapper.getWardId());
-		user.setFullAddress(wrapper.getFullAddress());
 
 		userService.update(user);
 

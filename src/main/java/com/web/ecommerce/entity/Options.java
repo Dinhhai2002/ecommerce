@@ -1,7 +1,5 @@
 package com.web.ecommerce.entity;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,8 +13,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Entity
-@Table(name = "product_options")
-public class ProductOptions extends BaseEntity{
+@Table(name = "options")
+public class Options extends BaseEntity{
     /**
 	 * 
 	 */
@@ -24,23 +22,11 @@ public class ProductOptions extends BaseEntity{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty("product_option_id")
-	private int id;
-	
-	@Column(name = "product_id")
-	private Integer productId;
-	
 	@Column(name = "option_id")
-	private Integer optionId;
-	
-	@Column(name = "option_value_id")
-	private Integer optionValueId;
-	
-	@Column(name = "additional_price", precision = 10, scale = 2)
-	private BigDecimal additionalPrice;
-	
-	@Column(name = "stock")
-	private Integer stock;
+	private int id;
+
+	@Column(name = "name", nullable = false, length = 50)
+	private String name;
 
 	@Column(name = "status")
 	private int status;

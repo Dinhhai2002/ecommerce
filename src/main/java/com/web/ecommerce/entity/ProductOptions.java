@@ -24,7 +24,7 @@ public class ProductOptions extends BaseEntity{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty("product_option_id")
+	@Column(name = "product_option_id")
 	private int id;
 	
 	@Column(name = "product_id")

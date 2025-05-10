@@ -4,30 +4,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.web.ecommerce.entity.Options;
+import com.web.ecommerce.entity.Option;
 
 import lombok.Data;
 
 @Data
-public class OptionsResponse {
-    @JsonProperty("option_id")
+public class OptionResponse {
+   @JsonProperty("option_id")
     private int id;
 
 	private String name;
 
 	private int status;
 
-	public OptionsResponse() {
+	public OptionResponse() {
 
 	}
 
-	public OptionsResponse(Options entity) {
+	public OptionResponse(Option entity) {
 		this.id = entity.getId();
 		this.name = entity.getName();
 		this.status = entity.getStatus();
 	}
 
-	public static List<OptionsResponse> mapToList(List<Options> entities) {
-		return entities.stream().map(x -> new OptionsResponse(x)).collect(Collectors.toList());
+	public static List<OptionResponse> mapToList(List<Option> entities) {
+		return entities.stream().map(x -> new OptionResponse(x)).collect(Collectors.toList());
 	}
 }

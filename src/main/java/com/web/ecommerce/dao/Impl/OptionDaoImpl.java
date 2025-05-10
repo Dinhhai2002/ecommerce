@@ -7,21 +7,21 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
-import com.web.ecommerce.dao.OptionsDao;
-import com.web.ecommerce.entity.Options;
+import com.web.ecommerce.dao.OptionDao;
+import com.web.ecommerce.entity.Option;
 
-@Repository("OptionsDao")
+@Repository("OptionDao")
 @Transactional
-public class OptionsDaoImpl extends BaseDaoImpl<Options, Integer> implements OptionsDao {
-    public OptionsDaoImpl() {
-        super(Options.class);
+public class OptionDaoImpl extends BaseDaoImpl<Option, Integer> implements OptionDao {
+    public OptionDaoImpl() {
+        super(Option.class);
     }
 
     @Override
-    public Options findByName(String name) {
+    public Option findByName(String name) {
         CriteriaBuilder builder = this.getSession().getCriteriaBuilder();
-        CriteriaQuery<Options> query = builder.createQuery(Options.class);
-        Root<Options> root = query.from(Options.class);
+        CriteriaQuery<Option> query = builder.createQuery(Option.class);
+        Root<Option> root = query.from(Option.class);
         query.where(builder.equal(root.get("name"), name));
         return this.getSession().createQuery(query).getResultList().stream().findFirst().orElse(null);
     }

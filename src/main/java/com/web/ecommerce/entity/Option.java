@@ -1,6 +1,5 @@
 package com.web.ecommerce.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,11 +13,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @Table(name = "options")
-public class Options extends BaseEntity{
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Option extends BaseEntity{
+    private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

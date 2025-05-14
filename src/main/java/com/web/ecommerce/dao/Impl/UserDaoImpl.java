@@ -1,4 +1,4 @@
-package com.web.ecommerce.dao.Impl;
+package com.web.ecommerce.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;

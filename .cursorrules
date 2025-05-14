@@ -19,8 +19,8 @@
 - Package structure for dao and service follows a specific pattern:
   - Dao interfaces must be placed directly in `dao` package (e.g., `ProductDao.java`)
   - Dao implementations must be placed in `dao.impl` package (e.g., `ProductDaoImpl.java`)
-  - Service interfaces must be placed directly in `service` package (e.g., `IProductService.java`)
-  - Service implementations must be placed in `service.impl` package (e.g., `ProductService.java`)
+  - Service interfaces must be placed directly in `service` package (e.g., `ProductService.java`)
+  - Service implementations must be placed in `service.impl` package (e.g., `ProductServiceImpl.java`)
 
 ## Architecture Guidelines
 - **Service Layer**: All business logic MUST be implemented in the Service layer (specifically in the impl package)
@@ -150,6 +150,10 @@
 - Use pagination for large datasets
 - Implement proper indexing
 - Use async operations where appropriate
+- **Avoid using findOne/findById methods inside loops** - Instead, collect IDs and use findByIds followed by a map lookup
+- **Avoid nested loops when possible** - Use Map data structures for O(1) lookups instead of O(n) sequential searches
+- **Batch database operations** - Collect IDs and fetch data in a single query instead of multiple individual queries
+- **Use stream operations efficiently** - Leverage Java Stream API for filtering, mapping, and collecting data with minimal code
 
 ## Best Practices
 
@@ -159,6 +163,8 @@
 - Use design patterns appropriately
 - Write clean, self-documenting code
 - Regular code reviews
+- **Use Map-based lookups instead of nested loops** - Create maps outside of loops for quick lookups inside loops
+- **Collect IDs and use batch fetching** - When needing to fetch related entities, collect IDs first and fetch all at once
 
 ### Documentation
 - Document all public APIs
@@ -200,6 +206,9 @@
 - [ ] Documentation updated
 - [ ] Code reviewed
 - [ ] Performance considered
+- [ ] No findOne/findById calls inside loops
+- [ ] Used Map-based lookups instead of nested loops where appropriate
+- [ ] Batch operations used for fetching related entities
 - [ ] Logging implemented
 - [ ] Configuration externalized
 - [ ] No sensitive data exposed 

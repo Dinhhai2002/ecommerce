@@ -1,4 +1,4 @@
-package com.web.ecommerce.dao.Impl;
+package com.web.ecommerce.dao.impl;
 
 import com.web.ecommerce.dao.UserRoleDao;
 import com.web.ecommerce.entity.UserRole;

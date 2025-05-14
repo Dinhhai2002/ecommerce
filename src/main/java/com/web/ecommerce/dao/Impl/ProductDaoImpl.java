@@ -1,4 +1,4 @@
-package com.web.ecommerce.dao.Impl;
+package com.web.ecommerce.dao.impl;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;

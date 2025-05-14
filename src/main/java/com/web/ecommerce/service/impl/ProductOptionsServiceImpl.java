@@ -1,5 +1,7 @@
 package com.web.ecommerce.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,5 +19,10 @@ public class ProductOptionsServiceImpl extends BaseServiceImpl<ProductOptions, I
     @Override
     public ProductOptions findByName(String name) {
         return productOptionsDao.findByName(name);
+    }
+
+    @Override
+    public List<ProductOptions> findByProductId(Integer productId) {
+        return productOptionsDao.findByProductId(productId);
     }
 }

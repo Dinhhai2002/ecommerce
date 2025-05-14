@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Index;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Entity
-@Table(name = "product_images")
+@Table(
+    name = "product_images",
+    indexes = {
+        @Index(name = "idx_product_id", columnList = "product_id")
+    }
+)
 public class ProductImage extends BaseEntity{
     /**
 	 * 

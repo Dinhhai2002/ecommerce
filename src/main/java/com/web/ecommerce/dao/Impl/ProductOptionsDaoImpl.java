@@ -1,4 +1,6 @@
-package com.web.ecommerce.dao.Impl;
+package com.web.ecommerce.dao.impl;
+
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -25,4 +27,10 @@ public class ProductOptionsDaoImpl extends BaseDaoImpl<ProductOptions, Integer> 
         query.where(builder.equal(root.get("name"), name));
         return this.getSession().createQuery(query).getResultList().stream().findFirst().orElse(null);
     }
+
+	@Override
+	public List<ProductOptions> findByProductId(Integer productId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

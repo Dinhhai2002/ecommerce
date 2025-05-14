@@ -22,6 +22,12 @@ public class ProductOptionsResponse {
 	@JsonProperty("option_value_id")
 	private Integer optionValueId;
 	
+	@JsonProperty("option_name")
+	private String optionName;
+	
+	@JsonProperty("option_value_name")
+	private String optionValueName;
+	
 	@JsonProperty("additional_price")
 	private BigDecimal additionalPrice;
 	

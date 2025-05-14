@@ -1,5 +1,7 @@
 package com.web.ecommerce.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,5 +19,10 @@ public class OptionValuesServiceImpl extends BaseServiceImpl<OptionValues, Integ
     @Override
     public OptionValues findByName(String name) {
         return optionValuesDao.findByName(name);
+    }
+
+    @Override
+    public List<OptionValues> findByOptionId(Integer optionId) {
+        return optionValuesDao.findByOptionId(optionId);
     }
 }

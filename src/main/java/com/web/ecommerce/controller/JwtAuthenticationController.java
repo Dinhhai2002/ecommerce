@@ -1,6 +1,7 @@
 package com.web.ecommerce.controller;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ import com.web.ecommerce.common.enums.OtpEnum;
 import com.web.ecommerce.common.utils.HttpService;
 import com.web.ecommerce.common.utils.StringErrorValue;
 import com.web.ecommerce.common.utils.Utils;
+import com.web.ecommerce.entity.Cart;
 import com.web.ecommerce.entity.UserRegister;
 import com.web.ecommerce.entity.Users;
 import com.web.ecommerce.request.CRUDUserRequest;
@@ -30,6 +32,7 @@ import com.web.ecommerce.request.ResetPasswordRequest;
 import com.web.ecommerce.response.BaseResponse;
 import com.web.ecommerce.response.JwtResponse;
 import com.web.ecommerce.response.UserResponse;
+import com.web.ecommerce.service.CartService;
 import com.web.ecommerce.service.UserRegisterService;
 import com.web.ecommerce.service.UserService;
 
@@ -41,287 +44,287 @@ import com.web.ecommerce.service.UserService;
 @RestController
 @RequestMapping("/api/v1/authentication")
 public class JwtAuthenticationController extends BaseUtilsController {
-    @Autowired
+	@Autowired
 	public UserRegisterService userRegisterService;
-    
-    
-    @Autowired
-    private UserService userService;
-    
-    @PostMapping("/login")
-    public ResponseEntity<BaseResponse<JwtResponse>> createAuthenticationToken(@RequestBody JwtRequest wrapper)
-            throws Exception {
-        BaseResponse<JwtResponse> response = new BaseResponse<>();
-        Users user = userService.findUsersByUsersNameAndPassword(wrapper.getUsername(),
-                Utils.encodeBase64(wrapper.getPassword()));
 
-        if (user == null) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.LOGIN_FAIL);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+	@Autowired
+	public CartService cartService;
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(wrapper.getUsername());
+	@Autowired
+	private UserService userService;
 
-        if (user.getIsActive() == 0) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.USER_IS_LOCKED);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+	@PostMapping("/login")
+	public ResponseEntity<BaseResponse<JwtResponse>> createAuthenticationToken(@RequestBody JwtRequest wrapper)
+			throws Exception {
+		BaseResponse<JwtResponse> response = new BaseResponse<>();
+		Users user = userService.findUsersByUsersNameAndPassword(wrapper.getUsername(),
+				Utils.encodeBase64(wrapper.getPassword()));
 
-        String token = jwtTokenUtil.generateToken(userDetails);
-        user.setAccessToken(token);
-        userService.update(user);
-        
-        response.setData(new JwtResponse(token));
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+		if (user == null) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.LOGIN_FAIL);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-    @PostMapping("/register")
-    public ResponseEntity<BaseResponse<UserResponse>> spUCreateUser(@Valid @RequestBody CRUDUserRequest wrapper)
-            throws Exception {
-        BaseResponse<UserResponse> response = new BaseResponse<>();
-        Users user = userService.spUCreateUsers(
-                wrapper.getUserName(),
-                wrapper.getFullName(),
-                wrapper.getEmail(),
-                wrapper.getPhone(),
-                Utils.encodeBase64(wrapper.getPassword()),
-                wrapper.getGender(),
-                wrapper.getBirthday(),
-                wrapper.getWardId(),
-                wrapper.getDistrictId(),
-                wrapper.getCityId(),
-                wrapper.getFullAddress(),
-                wrapper.getRole()
-        );
-        response.setData(new UserResponse(user));
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+		UserDetails userDetails = userDetailsService.loadUserByUsername(wrapper.getUsername());
 
-    @SuppressWarnings("rawtypes")
-    @PostMapping("/reset-password")
-    public ResponseEntity<BaseResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest wrapper)
-            throws Exception {
+		if (user.getIsActive() == 0) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.USER_IS_LOCKED);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-        BaseResponse response = new BaseResponse<>();
+		String token = jwtTokenUtil.generateToken(userDetails);
+		user.setAccessToken(token);
+		userService.update(user);
 
-        Users user = userService.findUsersByUsersName(wrapper.getUserName());
+		List<Cart> listCart = cartService.findByUserId(user.getId());
+		if (listCart != null && listCart.isEmpty()) {
+			Cart cart = new Cart();
+			cart.setUserId(user.getId());
+			cart.setStatus(1);
+			cartService.create(cart);
+		}
 
-        if (user == null) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.USER_NOT_FOUND);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+		response.setData(new JwtResponse(token));
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
-        if (!wrapper.getNewPassword().equals(wrapper.getConfirmPassword())) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.ERROR_CONFIRM_PASSWORD_AND_CONFIRM);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+	@PostMapping("/register")
+	public ResponseEntity<BaseResponse<UserResponse>> spUCreateUser(@Valid @RequestBody CRUDUserRequest wrapper)
+			throws Exception {
+		BaseResponse<UserResponse> response = new BaseResponse<>();
+		Users user = userService.spUCreateUsers(wrapper.getUserName(), wrapper.getFullName(), wrapper.getEmail(),
+				wrapper.getPhone(), Utils.encodeBase64(wrapper.getPassword()), wrapper.getGender(),
+				wrapper.getBirthday(), wrapper.getWardId(), wrapper.getDistrictId(), wrapper.getCityId(),
+				wrapper.getFullAddress(), wrapper.getRole());
+		response.setData(new UserResponse(user));
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
-        if (user.getIsConfirmOtp() == 0) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.OTP_IS_NOT_CONFIRM);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/reset-password")
+	public ResponseEntity<BaseResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest wrapper)
+			throws Exception {
 
-        user.setPassword(Utils.encodeBase64(wrapper.getNewPassword()));
-        user.setIsConfirmOtp(0);
+		BaseResponse response = new BaseResponse<>();
 
-        userService.update(user);
+		Users user = userService.findUsersByUsersName(wrapper.getUserName());
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+		if (user == null) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.USER_NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-    @SuppressWarnings("rawtypes")
-    @PostMapping("/otp-register")
-    public ResponseEntity<BaseResponse> otpRegister(@Valid @RequestBody OTPRegisterUserRequest wrapper)
-            throws Exception {
+		if (!wrapper.getNewPassword().equals(wrapper.getConfirmPassword())) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.ERROR_CONFIRM_PASSWORD_AND_CONFIRM);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-        BaseResponse<Object> response = new BaseResponse<>();
+		if (user.getIsConfirmOtp() == 0) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.OTP_IS_NOT_CONFIRM);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-        if (userService.findUsersByUsersName(wrapper.getUserName()) != null) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.NAME_USER_IS_EXIST);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+		user.setPassword(Utils.encodeBase64(wrapper.getNewPassword()));
+		user.setIsConfirmOtp(0);
 
-        if (userService.findUsersByEmail(wrapper.getEmail(), 0) != null) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.MAIL_USER_IS_EXIST);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+		userService.update(user);
 
-        if (userService.findUsersByPhone(wrapper.getPhone()) != null) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.PHONE_USER_IS_EXIST);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
-        /*
-         * - lấy ra userRegister -> Nếu có thì kiểm tra mã otp còn hạn hay không + Nếu
-         * hết thì set status =0 + Ngược lại thì thông báo tài khoản này đăng có người
-         * khác xác thực
-         */
-        UserRegister checkUserRegister = userRegisterService.findUsersRegisterByUsersNameAndEmail(wrapper.getUserName(),
-                wrapper.getEmail());
-        if (checkUserRegister != null) {
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/otp-register")
+	public ResponseEntity<BaseResponse> otpRegister(@Valid @RequestBody OTPRegisterUserRequest wrapper)
+			throws Exception {
 
-            if (this.caculateOtpExpired(checkUserRegister.getOtpCreatedAt()) > 0) {
-                checkUserRegister.setStatus(0);
-                userRegisterService.update(checkUserRegister);
-            }
+		BaseResponse<Object> response = new BaseResponse<>();
 
-            else {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessageError(StringErrorValue.USER_REGISTER_IS_AUTHENTICATING);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-        }
+		if (userService.findUsersByUsersName(wrapper.getUserName()) != null) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.NAME_USER_IS_EXIST);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-        Random rand = new Random();
-        int otpvalue = rand.nextInt(1255650);
-        sendEmail.sendSimpleEmail(wrapper.getEmail(), "Mã OTP",
-                "Mã OTP là:" + otpvalue + ". Mã otp này có thời hạn là 3p");
+		if (userService.findUsersByEmail(wrapper.getEmail(), 0) != null) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.MAIL_USER_IS_EXIST);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-        UserRegister userRegister = new UserRegister();
-        userRegister.setUserName(wrapper.getUserName());
-        userRegister.setEmail(wrapper.getEmail());
-        userRegister.setOtp(otpvalue);
-        userRegister.setOtpCreatedAt(new Date());
-        userRegister.setStatus(1);
+		if (userService.findUsersByPhone(wrapper.getPhone()) != null) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.PHONE_USER_IS_EXIST);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-        userRegisterService.create(userRegister);
+		/*
+		 * - lấy ra userRegister -> Nếu có thì kiểm tra mã otp còn hạn hay không + Nếu
+		 * hết thì set status =0 + Ngược lại thì thông báo tài khoản này đăng có người
+		 * khác xác thực
+		 */
+		UserRegister checkUserRegister = userRegisterService.findUsersRegisterByUsersNameAndEmail(wrapper.getUserName(),
+				wrapper.getEmail());
+		if (checkUserRegister != null) {
 
-        response.setData(otpvalue);
+			if (this.caculateOtpExpired(checkUserRegister.getOtpCreatedAt()) > 0) {
+				checkUserRegister.setStatus(0);
+				userRegisterService.update(checkUserRegister);
+			}
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+			else {
+				response.setStatus(HttpStatus.BAD_REQUEST);
+				response.setMessageError(StringErrorValue.USER_REGISTER_IS_AUTHENTICATING);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			}
+		}
 
-    @SuppressWarnings("rawtypes")
-    @PostMapping("/otp")
-    public ResponseEntity<BaseResponse> otpForgot(@Valid @RequestBody OTPRequest wrapper) throws Exception {
+		Random rand = new Random();
+		int otpvalue = rand.nextInt(1255650);
+		sendEmail.sendSimpleEmail(wrapper.getEmail(), "Mã OTP",
+				"Mã OTP là:" + otpvalue + ". Mã otp này có thời hạn là 3p");
 
-        BaseResponse<Object> response = new BaseResponse<>();
-        Users user = userService.findUsersByUsersNameAndEmail(wrapper.getUserName(), wrapper.getEmail());
+		UserRegister userRegister = new UserRegister();
+		userRegister.setUserName(wrapper.getUserName());
+		userRegister.setEmail(wrapper.getEmail());
+		userRegister.setOtp(otpvalue);
+		userRegister.setOtpCreatedAt(new Date());
+		userRegister.setStatus(1);
 
-        if (user == null) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessageError(StringErrorValue.USER_NOT_FOUND);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+		userRegisterService.create(userRegister);
 
-        Random rand = new Random();
-        int otpvalue = rand.nextInt(1255650);
-        sendEmail.sendSimpleEmail(wrapper.getEmail(), "Mã OTP",
-                "Mã OTP là:" + otpvalue + ". Mã otp này có thời hạn là 3p");
+		response.setData(otpvalue);
 
-        user.setOtp(otpvalue);
-        user.setOtpCreatedAt(new Date());
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
-        userService.update(user);
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/otp")
+	public ResponseEntity<BaseResponse> otpForgot(@Valid @RequestBody OTPRequest wrapper) throws Exception {
 
-        response.setData(otpvalue);
+		BaseResponse<Object> response = new BaseResponse<>();
+		Users user = userService.findUsersByUsersNameAndEmail(wrapper.getUserName(), wrapper.getEmail());
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+		if (user == null) {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessageError(StringErrorValue.USER_NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
 
-    @SuppressWarnings("rawtypes")
-    @PostMapping("/confirm-otp")
-    public ResponseEntity<BaseResponse> confirmOtp(@Valid @RequestBody ConfirmOtpRequest wrapper) throws Exception {
+		Random rand = new Random();
+		int otpvalue = rand.nextInt(1255650);
+		sendEmail.sendSimpleEmail(wrapper.getEmail(), "Mã OTP",
+				"Mã OTP là:" + otpvalue + ". Mã otp này có thời hạn là 3p");
 
-        BaseResponse<Object> response = new BaseResponse<>();
+		user.setOtp(otpvalue);
+		user.setOtpCreatedAt(new Date());
 
-        /*
-         * type = 0 => otp register || type = 1 => otp forgot password
-         */
+		userService.update(user);
 
-        if (wrapper.getType() == OtpEnum.REGISTER.getValue()) {
+		response.setData(otpvalue);
 
-            UserRegister userRegister = userRegisterService.findUsersRegisterByUsersNameAndEmail(wrapper.getUserName(),
-                    wrapper.getEmail());
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
-            if (userRegister == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessageError(StringErrorValue.OTP_IS_NOT_USING);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/confirm-otp")
+	public ResponseEntity<BaseResponse> confirmOtp(@Valid @RequestBody ConfirmOtpRequest wrapper) throws Exception {
 
-            if (userRegister.getOtp() != wrapper.getOtp()) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessageError(StringErrorValue.OTP_IS_NOT_CORRECT);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+		BaseResponse<Object> response = new BaseResponse<>();
 
-            // xử lí thời gian mã OTP.Quy định mã otp có thời hạn trong 3 phút
+		/*
+		 * type = 0 => otp register || type = 1 => otp forgot password
+		 */
 
-            if (this.caculateOtpExpired(userRegister.getOtpCreatedAt()) > 0) {
-                userRegister.setStatus(0);
-                userRegisterService.update(userRegister);
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessageError(StringErrorValue.OTP_IS_EXPIRED);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+		if (wrapper.getType() == OtpEnum.REGISTER.getValue()) {
 
-        } else {
-            Users user = userService.findUsersByUsersNameAndEmail(wrapper.getUserName(), wrapper.getEmail());
-            if (user == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessageError(StringErrorValue.USER_NOT_FOUND);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+			UserRegister userRegister = userRegisterService.findUsersRegisterByUsersNameAndEmail(wrapper.getUserName(),
+					wrapper.getEmail());
 
-            if (user.getOtp() != wrapper.getOtp()) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessageError(StringErrorValue.OTP_IS_NOT_CORRECT);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+			if (userRegister == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST);
+				response.setMessageError(StringErrorValue.OTP_IS_NOT_USING);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			}
 
-            // xử lí thời gian mã OTP.Quy định mã otp có thời hạn trong 3 phút
-            if (this.caculateOtpExpired(user.getOtpCreatedAt()) > 0) {
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessageError(StringErrorValue.OTP_IS_EXPIRED);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+			if (userRegister.getOtp() != wrapper.getOtp()) {
+				response.setStatus(HttpStatus.BAD_REQUEST);
+				response.setMessageError(StringErrorValue.OTP_IS_NOT_CORRECT);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			}
 
-            user.setIsConfirmOtp(1);
-            userService.update(user);
-        }
+			// xử lí thời gian mã OTP.Quy định mã otp có thời hạn trong 3 phút
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+			if (this.caculateOtpExpired(userRegister.getOtpCreatedAt()) > 0) {
+				userRegister.setStatus(0);
+				userRegisterService.update(userRegister);
+				response.setStatus(HttpStatus.BAD_REQUEST);
+				response.setMessageError(StringErrorValue.OTP_IS_EXPIRED);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			}
 
-    @PostMapping("/login-google")
-    public ResponseEntity<BaseResponse<JwtResponse>> loginGoogle(@Valid @RequestBody GoogleAccountRequest wrapper)
-            throws Exception {
+		} else {
+			Users user = userService.findUsersByUsersNameAndEmail(wrapper.getUserName(), wrapper.getEmail());
+			if (user == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST);
+				response.setMessageError(StringErrorValue.USER_NOT_FOUND);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			}
 
-        BaseResponse<JwtResponse> response = new BaseResponse<>();
-        Users registerUser = new Users();
-        String token;
-        Users users = userService.findUsersByEmail(wrapper.getEmail(), 1);
+			if (user.getOtp() != wrapper.getOtp()) {
+				response.setStatus(HttpStatus.BAD_REQUEST);
+				response.setMessageError(StringErrorValue.OTP_IS_NOT_CORRECT);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			}
 
-        // Nếu chưa có user thì tạo và gọi api login để set Token
-        if (users == null) {
-            registerUser.setEmail(wrapper.getEmail());
-            registerUser.setUserName(wrapper.getEmail());
-            registerUser.setAvatarUrl(wrapper.getImageUrl());
-            registerUser.setPassword(Utils.encodeBase64(applicationProperties.getPasswordAccountGoogle()));
-            registerUser.setFullName(wrapper.getFullname());
-            registerUser.setIsActive(1);
-            userService.create(registerUser);
+			// xử lí thời gian mã OTP.Quy định mã otp có thời hạn trong 3 phút
+			if (this.caculateOtpExpired(user.getOtpCreatedAt()) > 0) {
+				response.setStatus(HttpStatus.BAD_REQUEST);
+				response.setMessageError(StringErrorValue.OTP_IS_EXPIRED);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			}
 
-            token = HttpService.login(wrapper.getEmail(), applicationProperties.getPasswordAccountGoogle(),
-                    applicationProperties.getBaseUrl());
-            registerUser.setAccessToken(token);
-            response.setData(new JwtResponse(token));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        token = HttpService.login(users.getUserName(), applicationProperties.getPasswordAccountGoogle(),
-                applicationProperties.getBaseUrl());
-        response.setData(new JwtResponse(token));
+			user.setIsConfirmOtp(1);
+			userService.update(user);
+		}
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/login-google")
+	public ResponseEntity<BaseResponse<JwtResponse>> loginGoogle(@Valid @RequestBody GoogleAccountRequest wrapper)
+			throws Exception {
+
+		BaseResponse<JwtResponse> response = new BaseResponse<>();
+		Users registerUser = new Users();
+		String token;
+		Users users = userService.findUsersByEmail(wrapper.getEmail(), 1);
+
+		// Nếu chưa có user thì tạo và gọi api login để set Token
+		if (users == null) {
+			registerUser.setEmail(wrapper.getEmail());
+			registerUser.setUserName(wrapper.getEmail());
+			registerUser.setAvatarUrl(wrapper.getImageUrl());
+			registerUser.setPassword(Utils.encodeBase64(applicationProperties.getPasswordAccountGoogle()));
+			registerUser.setFullName(wrapper.getFullname());
+			registerUser.setIsActive(1);
+			userService.create(registerUser);
+
+			token = HttpService.login(wrapper.getEmail(), applicationProperties.getPasswordAccountGoogle(),
+					applicationProperties.getBaseUrl());
+			registerUser.setAccessToken(token);
+			response.setData(new JwtResponse(token));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+		token = HttpService.login(users.getUserName(), applicationProperties.getPasswordAccountGoogle(),
+				applicationProperties.getBaseUrl());
+		response.setData(new JwtResponse(token));
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
 }

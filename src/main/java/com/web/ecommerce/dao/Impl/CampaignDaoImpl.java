@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import com.web.ecommerce.dao.CampaignDao;
 import com.web.ecommerce.entity.Campaign;
-import com.web.ecommerce.entity.Category;
 
 @Repository("CampaignDao")
 @Transactional

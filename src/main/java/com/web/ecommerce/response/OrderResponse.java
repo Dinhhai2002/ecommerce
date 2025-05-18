@@ -40,8 +40,8 @@ public class OrderResponse {
 	@JsonProperty("created_at")
 	private String createdAt;
 
-//	@JsonProperty("order_detail")
-//	private List<OrderDetailResponse> orderDetailResponse;
+	@JsonProperty("order_detail")
+	private List<OrderDetailResponse> orderDetailResponse;
 
 	@JsonProperty("address_id")
 	private Integer addressId;
@@ -106,6 +106,11 @@ public class OrderResponse {
 		this.shippingAddress = entity.getShippingAddress();
 		this.customerPhone = entity.getCustomerPhone();
 		this.amountShipping = entity.getAmountShipping();
+	}
+	
+	public OrderResponse(Order entity, List<OrderDetailResponse> orderDetailResponse) {
+		this(entity);
+		this.orderDetailResponse = orderDetailResponse;
 	}
 
 	public List<OrderResponse> mapToList(List<Order> entities) {

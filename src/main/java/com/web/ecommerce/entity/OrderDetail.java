@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Entity
-@Table(name = "order_details")
+@Table(name = "order_detail")
 public class OrderDetail extends BaseEntity{
     /**
 	 * 

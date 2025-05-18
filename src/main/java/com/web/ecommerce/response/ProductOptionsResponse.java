@@ -19,11 +19,11 @@ public class ProductOptionsResponse {
 	@JsonProperty("option_id")
 	private Integer optionId;
 	
-	@JsonProperty("option_value_id")
-	private Integer optionValueId;
-	
 	@JsonProperty("option_name")
 	private String optionName;
+	
+	@JsonProperty("option_value_id")
+	private Integer optionValueId;
 	
 	@JsonProperty("option_value_name")
 	private String optionValueName;
@@ -43,7 +43,9 @@ public class ProductOptionsResponse {
 		this.id = entity.getId();
 		this.productId = entity.getProductId();
 		this.optionId = entity.getOptionId();
+		this.optionName = entity.getOptionName();
 		this.optionValueId = entity.getOptionValueId();
+		this.optionValueName = entity.getOptionValueName();
 		this.additionalPrice = entity.getAdditionalPrice();
 		this.stock = entity.getStock();
 		this.status = entity.getStatus();

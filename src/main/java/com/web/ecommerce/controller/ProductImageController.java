@@ -12,4 +12,5 @@ public class ProductImageController extends BaseController<ProductImage, Product
     public ProductImageController() {
         super(ProductImageResponse::new);
     }
+    
 }

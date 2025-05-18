@@ -1,11 +1,15 @@
 package com.web.ecommerce.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import com.web.ecommerce.common.utils.Pagination;
+import com.web.ecommerce.entity.Category;
 import com.web.ecommerce.entity.Product;
 import com.web.ecommerce.entity.ProductImage;
 import com.web.ecommerce.entity.ProductOptions;
-import com.web.ecommerce.entity.Category;
+import com.web.ecommerce.model.ProductFillterDto;
+import com.web.ecommerce.model.StoreProcedureListResult;
 import com.web.ecommerce.response.CampaignResponse;
 import com.web.ecommerce.response.ProductOptionsResponse;
 
@@ -46,4 +50,8 @@ public interface ProductService extends BaseService<Product, Integer> {
      * @return List of campaign responses
      */
     List<CampaignResponse> findProductCampaignsById(Integer productId);
+    
+    StoreProcedureListResult<ProductFillterDto> filterProductsStore(int productId, BigDecimal priceFrom,
+			BigDecimal priceTo, String categoryIds, String options, String sort,int isShowParent, String keySearch,
+			int status, Pagination pagination) throws Exception;
 }

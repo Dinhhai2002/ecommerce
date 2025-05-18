@@ -30,7 +30,10 @@ public class ProductOptionsDaoImpl extends BaseDaoImpl<ProductOptions, Integer> 
 
 	@Override
 	public List<ProductOptions> findByProductId(Integer productId) {
-		// TODO Auto-generated method stub
-		return null;
+        CriteriaBuilder builder = this.getSession().getCriteriaBuilder();
+        CriteriaQuery<ProductOptions> query = builder.createQuery(ProductOptions.class);
+        Root<ProductOptions> root = query.from(ProductOptions.class);
+        query.where(builder.equal(root.get("productId"), productId));
+        return this.getSession().createQuery(query).getResultList();
 	}
 }

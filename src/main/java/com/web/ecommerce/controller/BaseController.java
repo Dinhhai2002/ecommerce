@@ -65,7 +65,7 @@ public abstract class BaseController<T, R, ID extends Serializable> {
     public ResponseEntity<BaseResponse<R>> getById(@Parameter(description = "ID của entity") @PathVariable ID id) {
         T entity = baseService.findOne(id);
         if (entity == null) {
-            return buildResponse(null, HttpStatus.NOT_FOUND, "Not found");
+            return buildResponse(null, HttpStatus.BAD_REQUEST, "Not found");
         }
         return buildResponse(mapper.apply(entity), HttpStatus.OK, "success");
     }
@@ -107,7 +107,7 @@ public abstract class BaseController<T, R, ID extends Serializable> {
     public ResponseEntity<BaseResponse<Void>> delete(@Parameter(description = "ID của entity") @PathVariable ID id) {
         T entity = baseService.findOne(id);
         if (entity == null) {
-            return buildResponse(null, HttpStatus.NOT_FOUND, "Not found");
+            return buildResponse(null, HttpStatus.BAD_REQUEST, "Not found");
         }
         baseService.delete(entity);
         return buildResponse(null, HttpStatus.OK, "deleted success");

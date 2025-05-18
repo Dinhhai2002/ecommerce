@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Index;
+import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,8 +39,14 @@ public class ProductOptions extends BaseEntity{
 	@Column(name = "option_id")
 	private Integer optionId;
 	
+	@Column(name = "option_name")
+	private String optionName;
+	
 	@Column(name = "option_value_id")
 	private Integer optionValueId;
+	
+	@Column(name = "option_value_name")
+	private String optionValueName;
 	
 	@Column(name = "additional_price", precision = 10, scale = 2)
 	private BigDecimal additionalPrice;

@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.web.ecommerce.entity.Product;
 import com.web.ecommerce.model.ProductFillterDto;

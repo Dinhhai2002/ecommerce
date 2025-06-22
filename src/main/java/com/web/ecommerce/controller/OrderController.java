@@ -38,6 +38,7 @@ import com.web.ecommerce.entity.Cart;
 import com.web.ecommerce.entity.CartItem;
 import com.web.ecommerce.entity.Order;
 import com.web.ecommerce.entity.OrderDetail;
+import com.web.ecommerce.entity.OrderStatusLog;
 import com.web.ecommerce.entity.Product;
 import com.web.ecommerce.entity.Users;
 import com.web.ecommerce.model.StoreProcedureListResult;
@@ -55,6 +56,7 @@ import com.web.ecommerce.service.CartItemService;
 import com.web.ecommerce.service.CartService;
 import com.web.ecommerce.service.OrderDetailService;
 import com.web.ecommerce.service.OrderService;
+import com.web.ecommerce.service.OrderStatusLogService;
 import com.web.ecommerce.service.ProductService;
 
 @RestController
@@ -77,7 +79,9 @@ public class OrderController extends BaseUtilsController  {
 	
 	@Autowired
 	CartItemService cartItemService;
-	
+
+	@Autowired
+	private OrderStatusLogService orderStatusLogService;
 	
 	@GetMapping("")
 	public ResponseEntity<BaseResponse<BaseListDataResponse<OrderResponse>>> getAll(
@@ -239,6 +243,11 @@ public class OrderController extends BaseUtilsController  {
 
 		order.setStatus(newStatus);
 		orderService.update(order);
+		OrderStatusLog orderStatusLog = new OrderStatusLog();
+		orderStatusLog.setOrderId(order.getId());
+		orderStatusLog.setStatus(newStatus);
+		orderStatusLog.setStatusName(StatusOrderEnum.getStatusName(newStatus));
+		orderStatusLogService.create(orderStatusLog);
 		response.setData(new OrderResponse(order));
 
 		return new ResponseEntity<>(response, HttpStatus.OK);

@@ -1,22 +1,28 @@
 package com.web.ecommerce.common.enums;
 
 public enum StatusOrderEnum {
-	PENDING(1), 
-    CONFIRMED(2),
-    PROCESSING(3),
-    SHIPPED(4),
-    DELIVERED(5),
-    CANCELLED(6);
+	PENDING(1, "PENDING"), 
+    CONFIRMED(2, "CONFIRMED"),
+    PROCESSING(3, "PROCESSING"),
+    SHIPPED(4, "SHIPPED"),
+    DELIVERED(5, "DELIVERED"),
+    CANCELLED(6, "CANCELLED");
 
 	private int value;
+	private String name;    
 
-	private StatusOrderEnum(int value) {
+	private StatusOrderEnum(int value, String name) {
 		this.value = value;
+		this.name = name;
 	}
 
 	public int getValue() {
 		return value;
 	}
+
+	public String getName() {
+		return name;
+	}   
 
 	public static StatusOrderEnum valueOf(int value) {
 		switch (value) {
@@ -45,6 +51,14 @@ public enum StatusOrderEnum {
         }
         return false;
     }
+    public static String getStatusName(int status) {
+        for (StatusOrderEnum orderStatus : StatusOrderEnum.values()) {
+            if (orderStatus.getValue() == status) {
+                return orderStatus.getName();
+            }
+        }
+        return null;
+    }       
 
     // PENDING – Đơn hàng mới được tạo, đang chờ xác nhận.
     // CONFIRMED – Đơn hàng đã được xác nhận bởi hệ thống hoặc người bán.

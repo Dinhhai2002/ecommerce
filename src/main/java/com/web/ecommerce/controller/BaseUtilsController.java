@@ -143,4 +143,15 @@ public class BaseUtilsController {
 		return currentDate.getTime() - (otpDate.getTime() + TIME_OTP_EXPIRED);
 
 	}
+	
+	/**
+	 * Build response với format chuẩn
+	 */
+	protected <D> ResponseEntity<BaseResponse<D>> buildResponse(D data, HttpStatus status, String messageError) {
+		BaseResponse<D> response = new BaseResponse<>();
+		response.setData(data);
+		response.setStatus(status);
+		response.setMessageError(messageError);
+		return new ResponseEntity<>(response, status);
+	}
 }

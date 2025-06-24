@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.web.ecommerce.common.annotation.CheckPermission;
 import com.web.ecommerce.common.enums.PaymentMethodEnum;
 import com.web.ecommerce.common.enums.PaymentStatusEnum;
 import com.web.ecommerce.common.enums.StatusOrderEnum;
@@ -84,6 +85,7 @@ public class OrderController extends BaseUtilsController  {
 	private OrderStatusLogService orderStatusLogService;
 	
 	@GetMapping("")
+	@CheckPermission(description = "Lấy danh sách đơn hàng")
 	public ResponseEntity<BaseResponse<BaseListDataResponse<OrderResponse>>> getAll(
 			@RequestParam(name = "user_id", required = false, defaultValue = "-1") int userId,
 			@RequestParam(name = "key_search", required = false, defaultValue = "") String keySearch,
@@ -141,7 +143,7 @@ public class OrderController extends BaseUtilsController  {
 	}
 	
 	@PostMapping("/{id}/change-status")
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	@CheckPermission(description = "Thay đổi trạng thái đơn hàng")
 	public ResponseEntity<BaseResponse<OrderResponse>> changeStatus(@PathVariable("id") int id,
 			@Valid @RequestBody ChangeStatusOrderRequest wrapper) throws Exception {
 		BaseResponse<OrderResponse> response = new BaseResponse<>();

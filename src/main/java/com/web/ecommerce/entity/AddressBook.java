@@ -22,6 +22,7 @@ public class AddressBook extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "address_book_id")
 	private int id;
 
 	@Column(name = "user_id")

@@ -8,8 +8,8 @@ import lombok.Data;
 
 @Data
 public class CRUDOptionRequest {
-	@NotEmpty(message = "name không được phép để trống")
-	@Length(max = 50, message = "Tên không được phép lớn hơn 50 kí tự")
+    @NotEmpty(message = "name không được phép để trống")
+	@Length(max = 255, message = "Không được phép lớn hơn 255 kí tự")
 	private String name;
 
 }

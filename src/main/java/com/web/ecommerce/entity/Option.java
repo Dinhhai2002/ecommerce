@@ -15,16 +15,17 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "options")
 public class Option extends BaseEntity{
-    private static final long serialVersionUID = 1L;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "option_id")
 	private int id;
 
-	@Column(name = "name", nullable = false, length = 50)
 	private String name;
 
-	@Column(name = "status")
 	private int status;
 }

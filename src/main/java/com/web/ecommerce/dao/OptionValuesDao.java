@@ -1,10 +1,11 @@
 package com.web.ecommerce.dao;
 
-import java.util.List;
-
 import com.web.ecommerce.entity.OptionValues;
+import com.web.ecommerce.common.utils.Pagination;
+import com.web.ecommerce.model.StoreProcedureListResult;
 
 public interface OptionValuesDao extends BaseDao<OptionValues, Integer> {
     OptionValues findByName(String name);
-    List<OptionValues> findByOptionId(Integer optionId);
+
+    StoreProcedureListResult<OptionValues> spGListOptionValues(String keySearch,int status,Pagination pagination) throws Exception;
 }

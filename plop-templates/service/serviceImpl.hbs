@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.web.ecommerce.common.utils.Pagination;
 import com.web.ecommerce.dao.{{entity}}Dao;
 import com.web.ecommerce.entity.{{entity}};
+import com.web.ecommerce.model.StoreProcedureListResult;
 import com.web.ecommerce.service.{{entity}}Service;
 
 @Service("{{entity}}Service")
@@ -18,4 +20,10 @@ public class {{entity}}ServiceImpl extends BaseServiceImpl<{{entity}}, Integer> 
     public {{entity}} findByName(String name) {
         return {{lowerCase entity}}Dao.findByName(name);
     }
+
+    @Override
+    public StoreProcedureListResult<{{entity}}> spGList{{entity}}(String keySearch, int status, Pagination pagination)
+			throws Exception {
+		return {{lowerCase entity}}Dao.spGList{{entity}}(keySearch, status, pagination);
+	}
 }

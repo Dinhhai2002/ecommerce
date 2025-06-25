@@ -76,5 +76,10 @@ public class StringErrorValue {
 	public static final String REVIEW_IS_EXIST = "Bạn đã đánh giá sản phẩm này!";
 
 	public static final String ADDRESS_NOT_FOUND = "Địa chỉ không tồn tại trong hệ thống";
+	public static final String OPTION_NOT_FOUND = "Tùy chọn không tồn tại trong hệ thống";
+	public static final String OPTION_IS_EXIST = "Tùy chọn đã tồn tại trong hệ thống";
+
+	public static final String OPTION_VALUES_NOT_FOUND = "Giá trị tùy chọn không tồn tại trong hệ thống";
+	public static final String OPTION_VALUES_IS_EXIST = "Giá trị tùy chọn đã tồn tại trong hệ thống";
 
 }

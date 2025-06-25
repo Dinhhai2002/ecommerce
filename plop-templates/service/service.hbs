@@ -1,7 +1,11 @@
 package com.web.ecommerce.service;
 
+import com.web.ecommerce.common.utils.Pagination;
 import com.web.ecommerce.entity.{{entity}};
+import com.web.ecommerce.model.StoreProcedureListResult;
 
 public interface {{entity}}Service extends BaseService<{{entity}}, Integer> {
     {{entity}} findByName(String name);
+
+    StoreProcedureListResult<{{entity}}> spGList{{entity}}(String keySearch,int status,Pagination pagination) throws Exception;
 }

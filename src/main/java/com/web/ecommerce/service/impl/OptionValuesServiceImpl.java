@@ -1,13 +1,13 @@
 package com.web.ecommerce.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.web.ecommerce.common.utils.Pagination;
 import com.web.ecommerce.dao.OptionValuesDao;
 import com.web.ecommerce.entity.OptionValues;
+import com.web.ecommerce.model.StoreProcedureListResult;
 import com.web.ecommerce.service.OptionValuesService;
 
 @Service("OptionValuesService")
@@ -22,7 +22,8 @@ public class OptionValuesServiceImpl extends BaseServiceImpl<OptionValues, Integ
     }
 
     @Override
-    public List<OptionValues> findByOptionId(Integer optionId) {
-        return optionValuesDao.findByOptionId(optionId);
-    }
+    public StoreProcedureListResult<OptionValues> spGListOptionValues(String keySearch, int status, Pagination pagination)
+			throws Exception {
+		return optionValuesDao.spGListOptionValues(keySearch, status, pagination);
+	}
 }

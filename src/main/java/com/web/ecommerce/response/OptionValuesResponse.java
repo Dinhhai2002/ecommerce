@@ -10,12 +10,12 @@ import lombok.Data;
 
 @Data
 public class OptionValuesResponse {
-    @JsonProperty("option_value_id")
     private int id;
-    
-    @JsonProperty("option_id")
-    private Integer optionId;
 
+	@JsonProperty("option_id")
+	private Integer optionId;
+
+	@JsonProperty("value")
 	private String value;
 
 	private int status;
@@ -31,7 +31,7 @@ public class OptionValuesResponse {
 		this.status = entity.getStatus();
 	}
 
-	public static List<OptionValuesResponse> mapToList(List<OptionValues> entities) {
+	public List<OptionValuesResponse> mapToList(List<OptionValues> entities) {
 		return entities.stream().map(x -> new OptionValuesResponse(x)).collect(Collectors.toList());
 	}
 }

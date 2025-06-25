@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -22,6 +24,9 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
     private SessionFactory sessionFactory;
 
     private final Class<T> persistentClass;
+    
+    @PersistenceContext
+	private EntityManager entityManager;
 
     public BaseDaoImpl(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
@@ -30,6 +35,10 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
     protected Session getSession() {
         return sessionFactory.getCurrentSession();
     }
+    
+    protected CriteriaBuilder getBuilder() {
+		return entityManager.getCriteriaBuilder();
+	}
 
     @Override
     public void create(T entity) {
